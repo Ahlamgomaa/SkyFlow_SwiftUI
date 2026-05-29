@@ -10,6 +10,9 @@ import SwiftData
 
 @main
 struct WeatherAppApp: App {
+    @State private var showHome = false
+    
+   
     var sharedModelContainer: ModelContainer = {
         let schema = Schema([
             Item.self,
@@ -25,7 +28,25 @@ struct WeatherAppApp: App {
 
     var body: some Scene {
         WindowGroup {
-            SplashView()
+            ZStack {
+                if showHome {
+                    HomeView()
+                        .transition(.opacity)
+                } else {
+                    SplashView()
+                        .onTapGesture {
+                            withAnimation(.easeInOut(duration: 0.5)) {
+                                showHome = true
+                            }
+                        }
+                        .task {
+                            try? await Task.sleep(nanoseconds: 2_000_000_000)
+                            withAnimation(.easeInOut(duration: 0.5)) {
+                                showHome = true
+                            }
+                        }
+                }
+            }
         }
         .modelContainer(sharedModelContainer)
     }
