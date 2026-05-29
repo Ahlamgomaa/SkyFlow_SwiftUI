@@ -1,9 +1,4 @@
-//
-//  ErrorStateView.swift
-//  WeatherApp
-//
-//  Created by TaqieAllah on 29/05/2026.
-//
+
 
 import SwiftUI
 

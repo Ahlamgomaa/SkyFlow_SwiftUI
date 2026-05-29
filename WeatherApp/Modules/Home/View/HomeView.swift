@@ -17,11 +17,15 @@ struct HomeView: View {
                     
                 } else if let weather = viewModel.currentWeather {
                     
-                    TopWeatherDivisionView(weather: weather, isMorning: viewModel.isMorning)
+                    ScrollView(showsIndicators: false) {
+                        VStack(spacing: 24) {
+                            TopWeatherDivisionView(weather: weather, isMorning: viewModel.isMorning)
+                            
+                            ThreeDayForecastView(forecastDays: weather.forecast.forecastday, isMorning: viewModel.isMorning)
+                        }
+                    }
                     
-                    Spacer()
                 } else if let error = viewModel.errorMessage {
-                    
                     ErrorStateView(message: error) {
                         viewModel.loadWeatherData()
                     }
@@ -32,8 +36,4 @@ struct HomeView: View {
             viewModel.loadWeatherData(for: "London")
         }
     }
-}
-
-#Preview {
-    HomeView()
 }

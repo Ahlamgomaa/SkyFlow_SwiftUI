@@ -3,6 +3,7 @@ import Foundation
 public struct CurrentWeatherResponse: Decodable {
     public let location: LocationData
     public let current: CurrentWeatherData
+    public let forecast: ForecastData 
 
 }
 

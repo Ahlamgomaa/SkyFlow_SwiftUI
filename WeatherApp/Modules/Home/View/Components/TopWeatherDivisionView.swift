@@ -1,10 +1,3 @@
-//
-//  TopWeatherDivisionView.swift
-//  WeatherApp
-//
-//  Created by TaqieAllah on 29/05/2026.
-//
-
 import SwiftUI
 
 struct TopWeatherDivisionView: View {
@@ -12,9 +5,9 @@ struct TopWeatherDivisionView: View {
     let isMorning: Bool
     
     var body: some View {
-        VStack(spacing: 8) {
+        VStack(spacing: 4) {
             Text(weather.location.name)
-                .font(.system(size: 34, weight: .regular))
+                .font(.system(size: 34, weight: .bold ))
             
             Text("\(Int(weather.current.tempC))°")
                 .font(.system(size: 96, weight: .thin))
@@ -22,6 +15,12 @@ struct TopWeatherDivisionView: View {
             Text(weather.current.condition.text)
                 .font(.system(size: 20, weight: .medium))
                 .opacity(0.8)
+            
+            if let todayForecast = weather.forecast.forecastday.first {
+                Text("H:\(Int(todayForecast.day.maxtempC))°     L:\(Int(todayForecast.day.mintempC))°")
+                    .font(.system(size: 20, weight: .medium))
+                    .opacity(0.9)
+            }
             
             AsyncImage(url: URL(string: "https:\(weather.current.condition.icon)")) { image in
                 image
