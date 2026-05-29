@@ -11,11 +11,11 @@ struct ThreeDayForecastView: View {
                 Text("3-DAY FORECAST")
                     .font(.system(size: 14, weight: .bold))
             }
-            .foregroundColor(isMorning ? .black.opacity(0.6) : .white.opacity(0.6))
+            .foregroundColor(.white.opacity(0.8))
             .padding(.horizontal, 4)
             
             Divider()
-                .background(isMorning ? Color.black.opacity(0.2) : Color.white.opacity(0.2))
+                .background(Color.white.opacity(0.4))
             
             ForEach(Array(forecastDays.enumerated()), id: \.element.id) { index, dayData in
                 HStack {
@@ -40,21 +40,21 @@ struct ThreeDayForecastView: View {
                         .font(.system(size: 18, weight: .medium))
                         .frame(width: 90, alignment: .trailing)
                 }
-                .foregroundColor(isMorning ? .black : .white)
+                .foregroundColor(.white)
                 .padding(.vertical, 4)
                 
                 if index < forecastDays.count - 1 {
                     Divider()
-                        .background(isMorning ? Color.black.opacity(0.1) : Color.white.opacity(0.1))
+                        .background(Color.white.opacity(0.3))
                 }
             }
         }
         .padding()
-        .background(isMorning ? Color.white.opacity(0.1) : Color.black.opacity(0.1))
+        .background(Color(red: 0/255, green: 85/255, blue: 160/255).opacity(0.5))
         .cornerRadius(16)
         .overlay(
             RoundedRectangle(cornerRadius: 16)
-                .stroke(isMorning ? Color.white.opacity(0.3) : Color.black.opacity(0.1), lineWidth: 1)
+                .stroke(Color.white.opacity(0.4), lineWidth: 1)
         )
         .padding(.horizontal)
     }
