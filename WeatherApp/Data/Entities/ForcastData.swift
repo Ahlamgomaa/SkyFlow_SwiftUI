@@ -1,10 +1,10 @@
 
 
-public struct ForecastData: Decodable, Sendable {
+public struct ForecastData: Decodable {
     public let forecastday: [ForecastDay]
 }
 
-public struct ForecastDay: Decodable, Sendable, Identifiable {
+public struct ForecastDay: Decodable, Identifiable {
     public var id: String { date }
     public let date: String
     public let dateEpoch: Int
@@ -17,7 +17,7 @@ public struct ForecastDay: Decodable, Sendable, Identifiable {
     }
 }
 
-public struct DayInfo: Decodable, Sendable {
+public struct DayInfo: Decodable {
     public let maxtempC: Double
     public let mintempC: Double
     public let condition: WeatherCondition
