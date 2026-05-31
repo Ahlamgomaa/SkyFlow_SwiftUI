@@ -1,5 +1,3 @@
-
-
 import Foundation
 
 @Observable
@@ -33,8 +31,12 @@ class HomeViewModel {
     }
     
     var isMorning: Bool {
-        guard let isDay = currentWeather?.current.isDay else { return true }
-        return isDay == 1
+        let hour = Calendar.current.component(.hour, from: Date())
+        if hour >= 5 && hour < 18 {
+            return true
+        } else {
+            return false
+        }
     }
         
     var backgroundVideoName: String {

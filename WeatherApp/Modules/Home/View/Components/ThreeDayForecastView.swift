@@ -1,3 +1,5 @@
+
+
 import SwiftUI
 
 struct ThreeDayForecastView: View {
@@ -17,7 +19,8 @@ struct ThreeDayForecastView: View {
             Divider()
                 .background(Color.white.opacity(0.4))
             
-            ForEach(Array(forecastDays.enumerated()), id: \.element.id) { index, dayData in
+            
+            ForEach(Array(forecastDays.enumerated()), id: \.element.date) { index, dayData in
                 HStack {
                     Text(getDayName(for: index, dateString: dayData.date))
                         .font(.system(size: 18, weight: .medium))
@@ -51,12 +54,12 @@ struct ThreeDayForecastView: View {
         }
         .padding()
         .background(Color(red: 0/255, green: 85/255, blue: 160/255).opacity(0.5))
+
         .cornerRadius(16)
         .overlay(
             RoundedRectangle(cornerRadius: 16)
-                .stroke(Color.white.opacity(0.4), lineWidth: 1)
+                .stroke(Color.white.opacity(0.3), lineWidth: 1)
         )
-        .padding(.horizontal)
     }
     
     private func getDayName(for index: Int, dateString: String) -> String {

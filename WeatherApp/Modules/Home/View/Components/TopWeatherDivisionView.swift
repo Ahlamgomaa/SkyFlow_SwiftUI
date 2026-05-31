@@ -2,36 +2,42 @@ import SwiftUI
 
 struct TopWeatherDivisionView: View {
     let weather: CurrentWeatherResponse
+  
     let isMorning: Bool
     
     var body: some View {
-        VStack(spacing: 4) {
+        VStack(spacing: 6) {
             Text(weather.location.name)
-                .font(.system(size: 34, weight: .bold ))
+                .font(.system(size: 34, weight: .regular))
+                .shadow(color: .black.opacity(0.3), radius: 4, x: 0, y: 2)
             
             Text("\(Int(weather.current.tempC))°")
-                .font(.system(size: 96, weight: .thin))
+                .font(.system(size: 88, weight: .thin))
+                .shadow(color: .black.opacity(0.2), radius: 4, x: 0, y: 2)
             
             Text(weather.current.condition.text)
-                .font(.system(size: 20, weight: .medium))
-                .opacity(0.8)
+                .font(.system(size: 22, weight: .medium))
+                .opacity(0.9)
+                .shadow(color: .black.opacity(0.3), radius: 2, x: 0, y: 1)
             
             if let todayForecast = weather.forecast.forecastday.first {
-                Text("H:\(Int(todayForecast.day.maxtempC))°     L:\(Int(todayForecast.day.mintempC))°")
+                Text("H:\(Int(todayForecast.day.maxtempC))°  L:\(Int(todayForecast.day.mintempC))°")
                     .font(.system(size: 20, weight: .medium))
                     .opacity(0.9)
+                    .shadow(color: .black.opacity(0.3), radius: 2, x: 0, y: 1)
             }
-            
             AsyncImage(url: URL(string: "https:\(weather.current.condition.icon)")) { image in
-                image
-                    .resizable()
-                    .scaledToFit()
-            } placeholder: {
-                ProgressView()
-            }
-            .frame(width: 80, height: 80)
+                            image
+                                .resizable()
+                                .scaledToFit()
+                        } placeholder: {
+                            ProgressView()
+                                .tint(isMorning ? .black : .white)                         }
+                        .frame(width: 50, height: 50)
+                        Spacer()
+            
         }
-        .foregroundColor(isMorning ? .black : .white)
-        .padding(.top, 50)
+        .foregroundColor(.white) 
+        .padding(.top, 40)
     }
 }
