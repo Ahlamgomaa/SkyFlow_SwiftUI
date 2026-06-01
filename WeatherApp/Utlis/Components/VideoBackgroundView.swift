@@ -54,7 +54,6 @@ class LoopingPlayerUIView: UIView {
     }
     
     func updateVideo(videoName: String, videoType: String) {
-            // لو نفس الفيديو شغال حالياً متعملش حاجة عشان الشاشة متتهزش
             guard playerLayer.player?.rate == 0 || videoName != videoName else { return }
             
             guard let path = Bundle.main.path(forResource: videoName, ofType: videoType) else {
@@ -64,7 +63,6 @@ class LoopingPlayerUIView: UIView {
             let url = URL(fileURLWithPath: path)
             let playerItem = AVPlayerItem(url: url)
             
-            // إيقاف وتنظيف المشغل القديم تماماً لمنع التراكم
             queuePlayer?.pause()
             playerLooper?.disableLooping()
             

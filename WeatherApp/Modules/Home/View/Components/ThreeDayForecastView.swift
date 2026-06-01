@@ -14,7 +14,7 @@ struct ThreeDayForecastView: View {
                     .font(.system(size: 14, weight: .bold))
             }
             .foregroundColor(.white.opacity(0.8))
-            .padding(.horizontal, 4)
+           
             
             Divider()
                 .background(Color.white.opacity(0.4))

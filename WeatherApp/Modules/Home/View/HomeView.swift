@@ -61,21 +61,24 @@ struct HomeView: View {
                     }
                 }
             }
-            // 2. إضافة زرار الـ Toolbar للانتقال لشاشة الـ Favorites المنفصلة وتمرير الـ viewModel
             .toolbar {
                 ToolbarItem(placement: .navigationBarTrailing) {
                     NavigationLink(destination: FavoritesView(homeViewModel: viewModel)) {
                         Image(systemName: "list.bullet")
                             .font(.title3)
-                            .foregroundColor(viewModel.isMorning ? .black : .white)
+                            .foregroundColor( .white)
                     }
                 }
             }
         }
         .onAppear {
-            // يفتح التطبيق على آخر مدينة مضافة في المفضلة، لو فاضية يفتح لندن كافتراضي
             let initialCity = favoriteLocations.last?.name ?? "London"
             viewModel.loadWeatherData(for: initialCity)
+            
+            let appearance = UINavigationBarAppearance()
+            appearance.configureWithTransparentBackground()
+            UINavigationBar.appearance().standardAppearance = appearance
+            UINavigationBar.appearance().scrollEdgeAppearance = appearance
         }
     }
 }

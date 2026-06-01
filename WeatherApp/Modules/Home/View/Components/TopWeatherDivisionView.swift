@@ -51,6 +51,6 @@ struct TopWeatherDivisionView: View {
             Spacer()
         }
         .foregroundColor( .white)
-        .padding(.top, 40)
+        
     }
 }
