@@ -1,9 +1,4 @@
-//
-//  SplashViewModel.swift
-//  WeatherApp
-//
-//  Created by TaqieAllah on 27/05/2026.
-//
+
 
 import Foundation
 

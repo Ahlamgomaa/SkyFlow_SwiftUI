@@ -40,6 +40,6 @@ class HomeViewModel {
     }
         
     var backgroundVideoName: String {
-        isMorning ? "evening" : "evening"
+        isMorning ? "morning" : "evening"
     }
 }
