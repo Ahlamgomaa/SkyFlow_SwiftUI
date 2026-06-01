@@ -13,7 +13,7 @@ class HomeViewModel {
         self.repository = repository
     }
     
-    func loadWeatherData(for city: String = "London") {
+    func loadWeatherData(for city: String = "Cairo") {
         isLoading = true
         errorMessage = nil
         
@@ -32,7 +32,7 @@ class HomeViewModel {
     
     var isMorning: Bool {
         let hour = Calendar.current.component(.hour, from: Date())
-        if hour >= 5 && hour < 18 {
+        if hour >= 5 && hour < 17 {
             return true
         } else {
             return false

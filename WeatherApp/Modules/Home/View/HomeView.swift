@@ -13,51 +13,57 @@ struct HomeView: View {
                 VideoBackgroundView(videoName: viewModel.backgroundVideoName)
                     .ignoresSafeArea()
 
-                
-                VStack {
+                VStack(spacing: 0) {
                     if viewModel.isLoading {
-                        ProgressView("Fetching Weather...")
+                        Spacer()
                             .scaleEffect(1.5)
                             .tint(.white)
                             .foregroundColor(.white)
+                        Spacer()
                         
                     } else if let weather = viewModel.currentWeather {
                         
-                        ScrollView(.vertical, showsIndicators: false) {
-                            VStack(spacing: 34) {
-                                
-                                let isCurrentCityFavorite = favoriteLocations.contains { $0.name.lowercased() == weather.location.name.lowercased() }
+                        let isCurrentCityFavorite = favoriteLocations.contains { $0.name.lowercased() == weather.location.name.lowercased() }
 
-                                TopWeatherDivisionView(
-                                    weather: weather,
-                                    isMorning: viewModel.isMorning,
-                                    isFavorite: isCurrentCityFavorite,
-                                    onFavoriteTapped: {
-                                        if let existing = favoriteLocations.first(where: { $0.name.lowercased() == weather.location.name.lowercased() }) {
-                                            modelContext.delete(existing)
-                                        } else {
-                                            modelContext.insert(FavoriteCity(name: weather.location.name))
-                                        }
-                                        try? modelContext.save()
-                                    }
-                                )
-                                
-                                NavigationLink(destination: HourlyForecastView(viewModel: viewModel)) {
-                                    ThreeDayForecastView(forecastDays: weather.forecast.forecastday, isMorning: viewModel.isMorning)
-                                        .padding(.horizontal, 20)
+                        TopWeatherDivisionView(
+                            weather: weather,
+                            isMorning: viewModel.isMorning,
+                            isFavorite: isCurrentCityFavorite,
+                            onFavoriteTapped: {
+                                if let existing = favoriteLocations.first(where: { $0.name.lowercased() == weather.location.name.lowercased() }) {
+                                    modelContext.delete(existing)
+                                } else {
+                                    modelContext.insert(FavoriteCity(name: weather.location.name))
                                 }
-                                .buttonStyle(PlainButtonStyle())
+                                try? modelContext.save()
+                            }
+                        )
+                        
+                        ScrollView(.vertical, showsIndicators: false) {
+                            VStack(spacing: 20) {
+                        
+                                ThreeDayForecastView(
+                                    forecastDays: weather.forecast.forecastday,
+                                    isMorning: viewModel.isMorning,
+                                    currentTemp: weather.current.tempC,
+                                    viewModel: viewModel
+                                )
+                                .padding(.horizontal, 20)
                                 
                                 WeatherGridDetailsView(weather: weather, isMorning: viewModel.isMorning)
                                     .padding(.horizontal, 4)
-                                    .padding(.bottom, 30)
+                                    .padding(.bottom, 16)
                             }
+                            .padding(.top, 16)
                         }
+                        .safeAreaPadding(.bottom)
                         
                     } else if let error = viewModel.errorMessage {
+                        Spacer()
                         ErrorStateView(message: error) {
                             viewModel.loadWeatherData()
                         }
+                        Spacer()
                     }
                 }
             }
@@ -66,13 +72,13 @@ struct HomeView: View {
                     NavigationLink(destination: FavoritesView(homeViewModel: viewModel)) {
                         Image(systemName: "list.bullet")
                             .font(.title3)
-                            .foregroundColor( .white)
+                            .foregroundColor(.white)
                     }
                 }
             }
         }
         .onAppear {
-            let initialCity = favoriteLocations.last?.name ?? "London"
+            let initialCity = favoriteLocations.last?.name ?? "Cairo"
             viewModel.loadWeatherData(for: initialCity)
             
             let appearance = UINavigationBarAppearance()

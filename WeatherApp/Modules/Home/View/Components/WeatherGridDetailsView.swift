@@ -5,40 +5,53 @@ struct WeatherGridDetailsView: View {
     let isMorning: Bool
     
     private let columns = [
-        GridItem(.flexible(), spacing: 20),
-        GridItem(.flexible(), spacing: 20)
+        GridItem(.flexible(), spacing: 16),
+        GridItem(.flexible(), spacing: 16)
     ]
     
     var body: some View {
-        LazyVGrid(columns: columns, spacing: 24) {
+        LazyVGrid(columns: columns, spacing: 16) {
             
-            detailCard(title: "VISIBILITY", value: "\(Int(weather.current.visKm)) km")
+            detailCard(title: "VISIBILITY", value: "\(Int(weather.current.visKm)) km", systemIcon: "eye.fill")
             
-            detailCard(title: "HUMIDITY", value: "\(weather.current.humidity)%")
+            detailCard(title: "HUMIDITY", value: "\(weather.current.humidity)%", systemIcon: "humidity.fill")
             
-            detailCard(title: "FEELS LIKE", value: "\(Int(weather.current.feelslikeC))°")
+            detailCard(title: "FEELS LIKE", value: "\(Int(weather.current.feelslikeC))°", systemIcon: "thermometer.medium")
             
-            detailCard(title: "PRESSURE", value: formatPressure(weather.current.pressureMb))
+            detailCard(title: "PRESSURE", value: formatPressure(weather.current.pressureMb), systemIcon: "gauge.with.needle")
         }
-        .padding(.horizontal, 24)
-        .padding(.vertical, 16)
+        .padding(.horizontal, 20)
     }
     
     @ViewBuilder
-    private func detailCard(title: String, value: String) -> some View {
-        VStack(alignment: .center, spacing: 10) {
-            Text(title)
-                .font(.system(size: 12, weight: .bold))
-                .foregroundColor(.white.opacity(0.8))
-                .tracking(1)
+    private func detailCard(title: String, value: String, systemIcon: String) -> some View {
+        VStack(alignment: .leading, spacing: 12) {
+            HStack(spacing: 6) {
+                Text(title)
+                    .font(.system(size: 12, weight: .bold))
+                    .foregroundColor(.white)
+                    .tracking(1)
+
+                Image(systemName: systemIcon)
+                    .font(.footnote)
+                    .foregroundColor(.white)
+                
+           
+            }
+            
             Text(value)
-                .font(.system(size: 28, weight: .bold))
+                .font(.system(size: 28, weight: .medium, design: .rounded))
                 .foregroundColor(.white)
+                .padding(.leading, 2)
         }
-        .frame(maxWidth: .infinity)
-        .padding(.vertical, 16)
-        .background(Color(red: 0/255, green: 85/255, blue: 160/255).opacity(0.5))
-        .cornerRadius(12)
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .padding(.all, 16)
+        .background(Color(red: 0/255, green: 85/255, blue: 160/255).opacity(0.45))
+        .cornerRadius(16)
+        .overlay(
+            RoundedRectangle(cornerRadius: 16)
+                .stroke(Color.white.opacity(0.12), lineWidth: 1)
+        )
     }
     
     private func formatPressure(_ mb: Double) -> String {
