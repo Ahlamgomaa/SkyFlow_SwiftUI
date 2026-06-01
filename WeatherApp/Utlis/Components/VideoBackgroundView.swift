@@ -54,25 +54,26 @@ class LoopingPlayerUIView: UIView {
     }
     
     func updateVideo(videoName: String, videoType: String) {
-        guard videoName != currentVideoName else { return }
-        
-        guard let path = Bundle.main.path(forResource: videoName, ofType: videoType) else {
-            print("Video \(videoName).\(videoType) not found")
-            return
+            // لو نفس الفيديو شغال حالياً متعملش حاجة عشان الشاشة متتهزش
+            guard playerLayer.player?.rate == 0 || videoName != videoName else { return }
+            
+            guard let path = Bundle.main.path(forResource: videoName, ofType: videoType) else {
+                print("Video \(videoName).\(videoType) not found")
+                return
+            }
+            let url = URL(fileURLWithPath: path)
+            let playerItem = AVPlayerItem(url: url)
+            
+            // إيقاف وتنظيف المشغل القديم تماماً لمنع التراكم
+            queuePlayer?.pause()
+            playerLooper?.disableLooping()
+            
+            let player = AVQueuePlayer(playerItem: playerItem)
+            playerLayer.player = player
+            
+            playerLooper = AVPlayerLooper(player: player, templateItem: playerItem)
+            
+            queuePlayer = player
+            queuePlayer?.play()
         }
-        
-        let url = URL(fileURLWithPath: path)
-        let playerItem = AVPlayerItem(url: url)
-        
-        queuePlayer?.pause()
-        playerLooper?.disableLooping()
-        
-        let player = AVQueuePlayer(playerItem: playerItem)
-        playerLayer.player = player
-        
-        playerLooper = AVPlayerLooper(player: player, templateItem: playerItem)
-        queuePlayer = player
-        currentVideoName = videoName
-        queuePlayer?.play()
-    }
 }

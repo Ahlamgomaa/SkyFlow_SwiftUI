@@ -1,15 +1,18 @@
-
-
 import SwiftUI
+import SwiftData
 
 struct HomeView: View {
     @State private var viewModel = HomeViewModel()
+    
+    @Environment(\.modelContext) private var modelContext
+    @Query private var favoriteLocations: [FavoriteCity]
     
     var body: some View {
         NavigationStack {
             ZStack {
                 VideoBackgroundView(videoName: viewModel.backgroundVideoName)
                     .ignoresSafeArea()
+
                 
                 VStack {
                     if viewModel.isLoading {
@@ -23,7 +26,21 @@ struct HomeView: View {
                         ScrollView(.vertical, showsIndicators: false) {
                             VStack(spacing: 34) {
                                 
-                                TopWeatherDivisionView(weather: weather, isMorning: viewModel.isMorning)
+                                let isCurrentCityFavorite = favoriteLocations.contains { $0.name.lowercased() == weather.location.name.lowercased() }
+
+                                TopWeatherDivisionView(
+                                    weather: weather,
+                                    isMorning: viewModel.isMorning,
+                                    isFavorite: isCurrentCityFavorite,
+                                    onFavoriteTapped: {
+                                        if let existing = favoriteLocations.first(where: { $0.name.lowercased() == weather.location.name.lowercased() }) {
+                                            modelContext.delete(existing)
+                                        } else {
+                                            modelContext.insert(FavoriteCity(name: weather.location.name))
+                                        }
+                                        try? modelContext.save()
+                                    }
+                                )
                                 
                                 NavigationLink(destination: HourlyForecastView(viewModel: viewModel)) {
                                     ThreeDayForecastView(forecastDays: weather.forecast.forecastday, isMorning: viewModel.isMorning)
@@ -44,10 +61,21 @@ struct HomeView: View {
                     }
                 }
             }
+            // 2. إضافة زرار الـ Toolbar للانتقال لشاشة الـ Favorites المنفصلة وتمرير الـ viewModel
+            .toolbar {
+                ToolbarItem(placement: .navigationBarTrailing) {
+                    NavigationLink(destination: FavoritesView(homeViewModel: viewModel)) {
+                        Image(systemName: "list.bullet")
+                            .font(.title3)
+                            .foregroundColor(viewModel.isMorning ? .black : .white)
+                    }
+                }
+            }
         }
         .onAppear {
-            viewModel.loadWeatherData(for: "London")
+            // يفتح التطبيق على آخر مدينة مضافة في المفضلة، لو فاضية يفتح لندن كافتراضي
+            let initialCity = favoriteLocations.last?.name ?? "London"
+            viewModel.loadWeatherData(for: initialCity)
         }
     }
 }
-

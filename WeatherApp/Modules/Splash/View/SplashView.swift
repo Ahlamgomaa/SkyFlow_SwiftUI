@@ -21,10 +21,11 @@ struct SplashView: View {
     
     var body: some View {
         if viewModel.isAnimationFinished {
-            ContentView()
+            
         } else {
             ZStack {
-                Color.black                     .ignoresSafeArea()
+                Color.black
+                    .ignoresSafeArea()
                 
                 if let player = player {
                     VideoPlayer(player: player)
