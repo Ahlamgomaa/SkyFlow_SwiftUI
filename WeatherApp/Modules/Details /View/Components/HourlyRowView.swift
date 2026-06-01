@@ -1,16 +1,15 @@
-
 import SwiftUI
+
 struct HourlyRowView: View {
     let hour: HourInfo
-    
+    let isNow: Bool
     var body: some View {
-        HStack {
-            Text(formatTime(hour.time))
-                .font(.system(size: 26, weight: .regular))
-                .frame(width: 120, alignment: .leading)
-            
+        HStack(spacing: 0) {
+            Text(isNow ? "Now" : formatTime(hour.time))
+                .font(.system(size: 24, weight: isNow ? .bold : .medium))
+                .foregroundColor(isNow ? .yellow : .white)
+                .frame(width: 100, alignment: .leading)
             Spacer()
-            
             AsyncImage(url: URL(string: "https:\(hour.condition.icon)")) { image in
                 image
                     .resizable()
@@ -19,17 +18,17 @@ struct HourlyRowView: View {
                 ProgressView()
                     .tint(.white)
             }
-            .frame(width: 40, height: 40)
-            
+            .frame(width: 65, height: 65)
+            .frame(width: 80, alignment: .center)
             Spacer()
-            
             Text("\(Int(hour.tempC))°")
-                .font(.system(size: 28, weight: .regular))
-                .frame(width: 80, alignment: .trailing)
+                .font(.system(size: 28, weight: .medium, design: .rounded))
+                .foregroundColor(.white)
+                .frame(width: 70, alignment: .trailing)
         }
         .foregroundColor(.white)
-        .padding(.horizontal, 30)
-        .shadow(color: .black.opacity(0.2), radius: 2, x: 0, y: 1)
+        .frame(height: 65)
+        .padding(.horizontal, 24)
     }
     
     private func formatTime(_ timeString: String) -> String {

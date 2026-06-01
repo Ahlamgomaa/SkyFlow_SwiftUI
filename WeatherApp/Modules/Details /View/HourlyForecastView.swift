@@ -1,9 +1,23 @@
-
 import SwiftUI
 
 struct HourlyForecastView: View {
     @Environment(\.dismiss) private var dismiss
     let viewModel: HomeViewModel
+    let selectedDay: ForecastDay
+    let dayIndex: Int
+    private var filteredHours: [HourInfo] {
+        let hours = selectedDay.hour
+        
+        if dayIndex == 0 {
+            let currentHour = Calendar.current.component(.hour, from: Date())
+            return hours.filter { hour in
+                let hourComponent = hourHourComponent(from: hour.time)
+                return hourComponent >= currentHour
+            }
+        } else {
+            return hours
+        }
+    }
     
     var body: some View {
         ZStack {
@@ -23,9 +37,12 @@ struct HourlyForecastView: View {
                 
                 ScrollView(.vertical, showsIndicators: false) {
                     VStack(spacing: 20) {
-                        if let hours = viewModel.currentWeather?.forecast.forecastday.first?.hour {
-                            ForEach(hours, id: \.time) { hour in
-                                HourlyRowView(hour: hour)                            }
+                        if !filteredHours.isEmpty {
+                            ForEach(Array(filteredHours.enumerated()), id: \.element.time) { seqIndex, hour in
+                                let isNowRow = (dayIndex == 0 && seqIndex == 0)
+                                
+                                HourlyRowView(hour: hour, isNow: isNowRow)
+                            }
                         } else {
                             ProgressView()
                                 .tint(.white)
@@ -39,5 +56,13 @@ struct HourlyForecastView: View {
         }
         .navigationBarBackButtonHidden(true)
     }
+    
+    private func hourHourComponent(from timeString: String) -> Int {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "yyyy-MM-dd HH:mm"
+        if let date = formatter.date(from: timeString) {
+            return Calendar.current.component(.hour, from: date)
+        }
+        return 0
+    }
 }
-

@@ -30,8 +30,7 @@ struct ThreeDayForecastView: View {
             ForEach(Array(forecastDays.enumerated()), id: \.element.date) { index, dayData in
                 let minTemp = dayData.day.mintempC
                 let maxTemp = dayData.day.maxtempC
-                
-                NavigationLink(destination: HourlyForecastView(viewModel: viewModel)) {
+                NavigationLink(destination: HourlyForecastView(viewModel: viewModel, selectedDay: dayData, dayIndex: index)) {
                     HStack(spacing: 0) {
                         Text(getDayName(for: index, dateString: dayData.date))
                             .font(.system(size: 18, weight: .semibold))
