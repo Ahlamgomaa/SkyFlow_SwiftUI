@@ -8,9 +8,7 @@ class HomeViewModel {
     var currentWeather: CurrentWeatherResponse?
     var isLoading = false
     var errorMessage: String?
-    
-    var searchResults: [SearchResult] = []
-    var isSearching = false
+
     
     init(repository: WeatherRepository = WeatherRepositoryImp()) {
         self.repository = repository
@@ -33,30 +31,8 @@ class HomeViewModel {
         }
     }
     
-    // الدالة الجديدة المحدثة والمنظمة لعمل السيرش اللحظي من الـ Repository
-    func searchCities(query: String) {
-        guard !query.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else {
-            self.searchResults = []
-            return
-        }
-        
-        isSearching = true
-        
-        Task {
-            do {
-                let results = try await repository.searchCities(query: query)
-                await MainActor.run {
-                    self.searchResults = results
-                    self.isSearching = false
-                }
-            } catch {
-                print("Search ViewModel Error: \(error)")
-                await MainActor.run {
-                    self.isSearching = false
-                }
-            }
-        }
-    }
+
+ 
     
     var isMorning: Bool {
         let hour = Calendar.current.component(.hour, from: Date())

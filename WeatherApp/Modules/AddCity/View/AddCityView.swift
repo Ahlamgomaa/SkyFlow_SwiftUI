@@ -5,7 +5,7 @@ struct AddCityView: View {
     @Environment(\.modelContext) private var modelContext
     @Environment(\.dismiss) private var dismiss
     
-    @State private var viewModel = HomeViewModel()
+    @State private var viewModel = AddCityViewModel()
     @Query private var favoriteCities: [FavoriteCity]
     
     @State private var searchText = ""
