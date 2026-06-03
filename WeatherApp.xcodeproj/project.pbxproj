@@ -11,7 +11,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		6DF9C7C22FC7539300FA2BAE /* WeatherApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = WeatherApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		D2947F002FD04460006C2D38 /* WeatherApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = WeatherApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
@@ -38,16 +38,8 @@
 			isa = PBXGroup;
 			children = (
 				6DF9C7C42FC7539300FA2BAE /* WeatherApp */,
-				6DF9C7C32FC7539300FA2BAE /* Products */,
+				D2947F002FD04460006C2D38 /* WeatherApp.app */,
 			);
-			sourceTree = "<group>";
-		};
-		6DF9C7C32FC7539300FA2BAE /* Products */ = {
-			isa = PBXGroup;
-			children = (
-				6DF9C7C22FC7539300FA2BAE /* WeatherApp.app */,
-			);
-			name = Products;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -73,7 +65,7 @@
 				6D3896182FC99B27007E2624 /* Alamofire */,
 			);
 			productName = WeatherApp;
-			productReference = 6DF9C7C22FC7539300FA2BAE /* WeatherApp.app */;
+			productReference = D2947F002FD04460006C2D38 /* WeatherApp.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -104,7 +96,7 @@
 				6D3896172FC99B27007E2624 /* XCRemoteSwiftPackageReference "Alamofire" */,
 			);
 			preferredProjectObjectVersion = 77;
-			productRefGroup = 6DF9C7C32FC7539300FA2BAE /* Products */;
+			productRefGroup = 6DF9C7B92FC7539300FA2BAE;
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (

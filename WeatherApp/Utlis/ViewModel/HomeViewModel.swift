@@ -9,6 +9,9 @@ class HomeViewModel {
     var isLoading = false
     var errorMessage: String?
     
+    var searchResults: [SearchResult] = []
+    var isSearching = false
+    
     init(repository: WeatherRepository = WeatherRepositoryImp()) {
         self.repository = repository
     }
@@ -26,6 +29,31 @@ class HomeViewModel {
                 self.errorMessage = error.localizedDescription
                 self.isLoading = false
                 print("Error loading weather data: \(error)")
+            }
+        }
+    }
+    
+    // الدالة الجديدة المحدثة والمنظمة لعمل السيرش اللحظي من الـ Repository
+    func searchCities(query: String) {
+        guard !query.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else {
+            self.searchResults = []
+            return
+        }
+        
+        isSearching = true
+        
+        Task {
+            do {
+                let results = try await repository.searchCities(query: query)
+                await MainActor.run {
+                    self.searchResults = results
+                    self.isSearching = false
+                }
+            } catch {
+                print("Search ViewModel Error: \(error)")
+                await MainActor.run {
+                    self.isSearching = false
+                }
             }
         }
     }

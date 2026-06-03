@@ -26,39 +26,9 @@ struct FavoritesView: View {
                 } else {
                     List {
                         ForEach(favoriteCities) { city in
-                            Button {
+                            CustomFavoriteCityRow(city: city, repository: WeatherRepositoryImp()) {
                                 handleCitySelection(city.name)
-                            } label: {
-                                HStack {
-                                    VStack(alignment: .leading, spacing: 4) {
-                                        Text(city.name)
-                                            .font(.system(size: 24, weight: .bold))
-                                    }
-                                    
-                                    Spacer()
-                            
-                                    if let currentWeather = homeViewModel.currentWeather,
-                                       currentWeather.location.name.lowercased() == city.name.lowercased() {
-                                        VStack(alignment: .trailing, spacing: 2) {
-                                            Text("\(Int(currentWeather.current.tempC))°")
-                                                .font(.system(size: 32, weight: .medium))
-                                            Text(currentWeather.current.condition.text)
-                                                .font(.system(size: 14, weight: .bold))
-                                                .opacity(0.8)
-                                        }
-                                    } else {
-                                        Image(systemName: "chevron.right")
-                                            .font(.system(size: 16, weight: .semibold))
-                                            .opacity(0.7)
-                                    }
-                                }
-                                .padding(.horizontal, 24)
-                                .padding(.vertical, 20)
-                                .background(Color.white.opacity(0.15))
-                                .cornerRadius(15)
-                                .foregroundColor(.white)
                             }
-                            .buttonStyle(PlainButtonStyle())
                             .swipeActions(edge: .trailing, allowsFullSwipe: true) {
                                 Button(role: .destructive) {
                                     cityToDelete = city
@@ -92,9 +62,7 @@ struct FavoritesView: View {
         }
         .toolbar {
             ToolbarItem(placement: .navigationBarTrailing) {
-                Button {
-                    print("Navigate to Add City Screen")
-                } label: {
+                NavigationLink(destination: AddCityView()) {
                     Image(systemName: "plus")
                         .font(.title3)
                         .foregroundColor(.white)
@@ -122,3 +90,4 @@ struct FavoritesView: View {
         cityToDelete = nil
     }
 }
+

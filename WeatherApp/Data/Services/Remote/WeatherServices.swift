@@ -1,4 +1,6 @@
 import Foundation
 
 protocol WeatherServices {
-    func getCurrentWeather(city: String) async throws -> CurrentWeatherResponse}
+    func getCurrentWeather(city: String) async throws -> CurrentWeatherResponse
+    func searchCities(query: String) async throws -> [SearchResult] 
+}
