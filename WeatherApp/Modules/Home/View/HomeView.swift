@@ -16,27 +16,33 @@ struct HomeView: View {
                 VideoBackgroundView(videoName: viewModel.backgroundVideoName)
                     .ignoresSafeArea()
                 
-                TabView {
-                    SingleCityContainerView(
-                        cityName: "Cairo",
-                        favoriteLocations: favoriteLocations,
-                        modelContext: modelContext
-                    )
-                    .id("Cairo-StaticPage")
-                    
-                    ForEach(displayedCities, id: \.self) { cityName in
+                if viewModel.isOffline {
+                    NoConnectionView(viewModel: viewModel)
+                        .transition(.opacity.combined(with: .scale))
+                } else {
+                    TabView {
                         SingleCityContainerView(
-                            cityName: cityName,
+                            cityName: "Cairo",
                             favoriteLocations: favoriteLocations,
                             modelContext: modelContext
                         )
-                        .id("\(cityName)-\(displayedCities.count)")
+                        .id("Cairo-StaticPage")
+                        
+                        ForEach(displayedCities, id: \.self) { cityName in
+                            SingleCityContainerView(
+                                cityName: cityName,
+                                favoriteLocations: favoriteLocations,
+                                modelContext: modelContext
+                            )
+                            .id("\(cityName)-\(displayedCities.count)")
+                        }
                     }
+                    .tabViewStyle(.page(indexDisplayMode: .always))
+                    .ignoresSafeArea(edges: .top)
+                    .id(displayedCities.joined(separator: ","))
                 }
-                .tabViewStyle(.page(indexDisplayMode: .always))
-                .ignoresSafeArea(edges: .top)
-                .id(displayedCities.joined(separator: ","))
             }
+            .animation(.easeInOut, value: viewModel.isOffline)
             .toolbar {
                 ToolbarItem(placement: .navigationBarTrailing) {
                     NavigationLink(destination: FavoritesView(homeViewModel: viewModel)) {
@@ -49,6 +55,8 @@ struct HomeView: View {
         }
         .onAppear {
             setupDisplayedCities()
+            
+            viewModel.loadWeatherData()
             
             let appearance = UINavigationBarAppearance()
             appearance.configureWithTransparentBackground()
@@ -73,4 +81,3 @@ struct HomeView: View {
         }
     }
 }
-
