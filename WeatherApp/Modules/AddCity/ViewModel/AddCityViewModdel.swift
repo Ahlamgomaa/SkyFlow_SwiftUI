@@ -37,4 +37,16 @@ class AddCityViewModel {
             }
         }
     }
+    var isMorning: Bool {
+        let hour = Calendar.current.component(.hour, from: Date())
+        if hour >= 5 && hour < 17 {
+            return true
+        } else {
+            return false
+        }
+    }
+        
+    var backgroundVideoName: String {
+        isMorning ? "morning" : "evening"
+    }
 }

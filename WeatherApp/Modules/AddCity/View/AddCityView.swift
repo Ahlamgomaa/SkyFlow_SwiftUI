@@ -13,7 +13,7 @@ struct AddCityView: View {
     
     let suggestedCities = [
         "Cairo", "Alexandria", "Washington", "New York",
-        "Los Angeles", "Chicago", "Houston", 
+        "Los Angeles", "Chicago", "Houston",
         "Paris", "Tokyo", "Dubai", "Miami"
     ]
     
@@ -90,8 +90,13 @@ struct AddCityView: View {
             }
         }
         .background(
-            Color(red: 10/255, green: 34/255, blue: 64/255)
-                .ignoresSafeArea()
+            ZStack {
+                VideoBackgroundView(videoName: viewModel.backgroundVideoName)
+                    .ignoresSafeArea()
+                
+                Color.black.opacity(0.3)
+                    .ignoresSafeArea()
+            }
         )
         .navigationBarHidden(true)
     }
@@ -139,7 +144,7 @@ struct AddCityView: View {
                 Divider()
                     .background(Color.white.opacity(0.15))
             }
-            .background(Color.white.opacity(pressedCityName == name ? 0.08 : 0.001))
+            .background(Color.white.opacity(pressedCityName == name ? 0.15 : 0.001))
         }
         .buttonStyle(.plain)
         .scaleEffect(pressedCityName == name ? 0.90 : 1.0)
