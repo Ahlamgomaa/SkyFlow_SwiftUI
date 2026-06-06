@@ -30,7 +30,7 @@ struct HourlyForecastView: View {
                 }) {
                     Image(systemName: "arrow.left")
                         .font(.title2)
-                        .foregroundColor(.white)
+                        .foregroundColor(viewModel.isMorning ? .black.opacity(0.9) : .white)
                         .padding(.horizontal, 20)
                         .padding(.top, 20)
                 }
@@ -41,11 +41,11 @@ struct HourlyForecastView: View {
                             ForEach(Array(filteredHours.enumerated()), id: \.element.time) { seqIndex, hour in
                                 let isNowRow = (dayIndex == 0 && seqIndex == 0)
                                 
-                                HourlyRowView(hour: hour, isNow: isNowRow)
+                                HourlyRowView(hour: hour, isNow: isNowRow, isMorning: viewModel.isMorning)
                             }
                         } else {
                             ProgressView()
-                                .tint(.white)
+                                .tint(viewModel.isMorning ? .black.opacity(0.9) : .white)
                                 .frame(maxWidth: .infinity, alignment: .center)
                         }
                     }

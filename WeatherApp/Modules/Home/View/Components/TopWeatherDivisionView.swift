@@ -9,6 +9,9 @@ struct TopWeatherDivisionView: View {
     
     @State private var animateStar = false
     @State private var showDeleteAlert = false
+    private var textColor:Color{
+        isMorning ? .black.opacity(0.9) : .white
+    }
     
     var body: some View {
         ZStack(alignment: .bottomTrailing) {
@@ -30,6 +33,7 @@ struct TopWeatherDivisionView: View {
                     Text(cityName.isEmpty ? weather.location.name : cityName)
                         .font(.system(size: 34, weight: .bold, design: .rounded))
                         .shadow(color: .black.opacity(0.25), radius: 4, x: 0, y: 2)
+                        .foregroundColor(textColor)
                     
                     Button(action: {
                         if isFavorite {
@@ -41,7 +45,7 @@ struct TopWeatherDivisionView: View {
                     }) {
                         Image(systemName: isFavorite ? "star.fill" : "star")
                             .font(.title2)
-                            .foregroundColor(isFavorite ? .red : .white)
+                            .foregroundColor(isFavorite ? .red : textColor)
                             .scaleEffect(animateStar ? 1.3 : 1.0)
                     }
                 }
@@ -50,15 +54,17 @@ struct TopWeatherDivisionView: View {
                 Text(weather.current.condition.text)
                     .font(.system(size: 22, weight: .bold, design: .rounded))
                     .shadow(color: .black.opacity(0.25), radius: 2, x: 0, y: 1)
+                    .foregroundColor(textColor)
                 
                 if let todayForecast = weather.forecast.forecastday.first {
                     Text("H:\(Int(todayForecast.day.maxtempC))°  L:\(Int(todayForecast.day.mintempC))°")
                         .font(.system(size: 18, weight: .regular, design: .rounded))
                         .shadow(color: .black.opacity(0.25), radius: 2, x: 0, y: 1)
+                        .foregroundColor(textColor)
                 }
             }
             .frame(maxWidth: .infinity)
-            .padding(.vertical, 18)
+            .padding(.vertical, 10)
             .zIndex(1)
         }
         .foregroundColor(.white)

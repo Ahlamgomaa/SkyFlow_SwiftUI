@@ -2,10 +2,10 @@ import SwiftUI
 import SwiftData
 
 struct FavoritesView: View {
-    @Bindable var homeViewModel: HomeViewModel
+    @State private var viewModel = FavoriteLocationViewModel()
+    
     @Environment(\.modelContext) private var modelContext
     @Query private var favoriteLocations: [FavoriteCity]
-    
     @Query(sort: \FavoriteCity.timestamp, order: .forward) private var favoriteCities: [FavoriteCity]
     
     @State private var selectedCity: FavoriteCity? = nil
@@ -16,7 +16,7 @@ struct FavoritesView: View {
     
     var body: some View {
         ZStack {
-            VideoBackgroundView(videoName: homeViewModel.backgroundVideoName)
+            VideoBackgroundView(videoName: viewModel.backgroundVideoName)
                 .ignoresSafeArea()
            
             VStack {
@@ -36,6 +36,7 @@ struct FavoritesView: View {
                                 } label: {
                                     Label("Delete", systemImage: "trash")
                                 }
+                                
                             }
                         }
                         .listRowBackground(Color.clear)
@@ -45,13 +46,16 @@ struct FavoritesView: View {
                 }
             }
             .navigationDestination(isPresented: $showDetails) {
-                WeatherDetailsContentView(
-                    viewModel: homeViewModel,
-                    favoriteLocations: favoriteLocations,
-                    modelContext: modelContext,
-                    cityName: selectedCity?.name ?? ""
-                )
-                .navigationBarBackButtonHidden(false)
+                if let selected = selectedCity {
+                    SingleCityContainerView(
+                        cityName: selected.name,
+                        latitude: selected.latitude,
+                        longitude: selected.longitude,
+                        favoriteLocations: favoriteLocations,
+                        modelContext: modelContext
+                    )
+                    .navigationBarBackButtonHidden(false)
+                }
             }
         }
         .toolbar {
@@ -59,7 +63,7 @@ struct FavoritesView: View {
                 NavigationLink(destination: AddCityView()) {
                     Image(systemName: "plus")
                         .font(.title3)
-                        .foregroundColor(.white)
+                        .foregroundColor(viewModel.isMorning ? .black.opacity(0.9) : .white)
                 }
             }
         }
@@ -68,14 +72,12 @@ struct FavoritesView: View {
             Button("Delete", role: .destructive) {
                 confirmDelete(city)
             }
-        } message: { city in
             Text("Are you sure you want to remove \(city.name) from your favorites?")
         }
     }
     
     private func handleCitySelection(_ city: FavoriteCity) {
-        self.selectedCity = city 
-        homeViewModel.loadWeatherData(lat: city.latitude, lon: city.longitude)
+        self.selectedCity = city
         showDetails = true
     }
     

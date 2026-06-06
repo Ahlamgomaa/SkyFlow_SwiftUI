@@ -13,7 +13,6 @@ struct HomeView: View {
     @Query(sort: \FavoriteCity.timestamp, order: .forward)
     private var favoriteLocations: [FavoriteCity]
     
-    
     var body: some View {
         NavigationStack {
             ZStack {
@@ -59,10 +58,10 @@ struct HomeView: View {
             .animation(.easeInOut, value: viewModel.isOffline)
             .toolbar {
                 ToolbarItem(placement: .navigationBarTrailing) {
-                    NavigationLink(destination: FavoritesView(homeViewModel: viewModel)) {
+                    NavigationLink(destination: FavoritesView()) {
                         Image(systemName: "list.bullet")
                             .font(.title3)
-                            .foregroundColor(.white)
+                            .foregroundColor(viewModel.isMorning ? .black.opacity(0.9) : .white)
                     }
                 }
             }

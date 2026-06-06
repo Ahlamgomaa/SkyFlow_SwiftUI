@@ -3,11 +3,14 @@ import SwiftUI
 struct WeatherGridDetailsView: View {
     let weather: CurrentWeatherResponse
     let isMorning: Bool
-    
+    private var textColor:Color{
+        isMorning ? .black.opacity(0.9) : .white
+    }
     private let columns = [
         GridItem(.flexible(), spacing: 16),
         GridItem(.flexible(), spacing: 16)
     ]
+    
     
     var body: some View {
         LazyVGrid(columns: columns, spacing: 16) {
@@ -29,19 +32,19 @@ struct WeatherGridDetailsView: View {
             HStack(spacing: 6) {
                 Text(title)
                     .font(.system(size: 12, weight: .bold))
-                    .foregroundColor(.white)
+                    .foregroundColor(textColor)
                     .tracking(1)
 
                 Image(systemName: systemIcon)
                     .font(.footnote)
-                    .foregroundColor(.white)
+                    .foregroundColor(textColor)
                 
            
             }
             
             Text(value)
                 .font(.system(size: 28, weight: .medium, design: .rounded))
-                .foregroundColor(.white)
+                .foregroundColor(textColor)
                 .padding(.leading, 2)
         }
         .frame(maxWidth: .infinity, alignment: .leading)
