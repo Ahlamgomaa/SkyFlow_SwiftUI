@@ -27,7 +27,7 @@ struct FavoritesView: View {
                     List {
                         ForEach(favoriteCities) { city in
                             CustomFavoriteCityRow(city: city, repository: WeatherRepositoryImp()) {
-                                handleCitySelection(city.name)
+                                handleCitySelection(city)
                             }
                             .swipeActions(edge: .trailing, allowsFullSwipe: true) {
                                 Button(role: .destructive) {
@@ -53,7 +53,7 @@ struct FavoritesView: View {
                     WeatherDetailsContentView(
                         viewModel: homeViewModel,
                         favoriteLocations: favoriteLocations,
-                        modelContext: modelContext
+                        modelContext: modelContext, cityName: <#String#>
                     )
                     .navigationBarBackButtonHidden(false)
                 },
@@ -79,8 +79,8 @@ struct FavoritesView: View {
         }
     }
     
-    private func handleCitySelection(_ cityName: String) {
-        homeViewModel.loadWeatherData(for: cityName)
+    private func handleCitySelection(_ city: FavoriteCity) {
+        homeViewModel.loadWeatherData(lat: city.latitude, lon: city.longitude)
         showDetails = true
     }
     
