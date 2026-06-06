@@ -4,6 +4,7 @@ struct TopWeatherDivisionView: View {
     let weather: CurrentWeatherResponse
     let isMorning: Bool
     let isFavorite: Bool
+    let cityName: String
     let onFavoriteTapped: () -> Void
     
     @State private var animateStar = false
@@ -26,7 +27,7 @@ struct TopWeatherDivisionView: View {
             
             VStack(spacing: 4) {
                 HStack(spacing: 10) {
-                    Text(weather.location.name)
+                    Text(cityName.isEmpty ? weather.location.name : cityName)
                         .font(.system(size: 34, weight: .bold, design: .rounded))
                         .shadow(color: .black.opacity(0.25), radius: 4, x: 0, y: 2)
                     
@@ -39,18 +40,12 @@ struct TopWeatherDivisionView: View {
                         }
                     }) {
                         Image(systemName: isFavorite ? "star.fill" : "star")
-                            .font(.title3)
+                            .font(.title2)
                             .foregroundColor(isFavorite ? .red : .white)
-                            .scaleEffect(animateStar ? 1.4 : 1.0)
-                            .rotationEffect(.degrees(animateStar ? 15 : 0))
+                            .scaleEffect(animateStar ? 1.3 : 1.0)
                     }
-                    .animation(.spring(response: 0.3, dampingFraction: 0.4, blendDuration: 0), value: animateStar)
                 }
-                
-                Text("\(Int(weather.current.tempC))°")
-                    .font(.system(size: 86, weight: .thin, design: .rounded))
-                    .shadow(color: .black.opacity(0.2), radius: 4, x: 0, y: 2)
-                    .padding(.leading, 14)
+                .padding(.leading, 14)
                 
                 Text(weather.current.condition.text)
                     .font(.system(size: 22, weight: .bold, design: .rounded))
@@ -72,7 +67,7 @@ struct TopWeatherDivisionView: View {
         .alert(isPresented: $showDeleteAlert) {
             Alert(
                 title: Text("Remove from Favorites?"),
-                message: Text("Are you sure you want to remove \(weather.location.name) from your favorite cities?"),
+                message: Text("Are you sure you want to remove \(cityName.isEmpty ? weather.location.name : cityName) from your favorite cities?"),
                 primaryButton: .destructive(Text("Delete")) {
                     triggerStarAnimation()
                     onFavoriteTapped()
@@ -83,8 +78,10 @@ struct TopWeatherDivisionView: View {
     }
     
     private func triggerStarAnimation() {
-        animateStar = true
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.25) {
+        withAnimation(.spring(response: 0.3, dampingFraction: 0.5)) {
+            animateStar = true
+        }
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
             animateStar = false
         }
     }

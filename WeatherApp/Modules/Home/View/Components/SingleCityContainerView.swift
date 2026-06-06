@@ -1,7 +1,10 @@
 import SwiftUI
 import SwiftData
+
 struct SingleCityContainerView: View {
     let cityName: String
+    let latitude: Double
+    let longitude: Double
     var favoriteLocations: [FavoriteCity]
     var modelContext: ModelContext
     
@@ -11,10 +14,11 @@ struct SingleCityContainerView: View {
         WeatherDetailsContentView(
             viewModel: singleViewModel,
             favoriteLocations: favoriteLocations,
-            modelContext: modelContext
+            modelContext: modelContext,
+            cityName: cityName 
         )
         .onAppear {
-            singleViewModel.loadWeatherData(for: cityName)
+            singleViewModel.loadWeatherData(lat: latitude, lon: longitude)
         }
     }
 }

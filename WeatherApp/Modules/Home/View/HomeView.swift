@@ -1,14 +1,18 @@
 import SwiftUI
 import SwiftData
+import CoreLocation
 
 struct HomeView: View {
     @State private var viewModel = HomeViewModel()
+    @State private var locationManager = LocationManager()
+    
+    @State private var hasLocationLoaded = false
+    
     @Environment(\.modelContext) private var modelContext
     
     @Query(sort: \FavoriteCity.timestamp, order: .forward)
     private var favoriteLocations: [FavoriteCity]
     
-    @State private var displayedCities: [String] = []
     
     var body: some View {
         NavigationStack {
@@ -20,26 +24,36 @@ struct HomeView: View {
                     NoConnectionView(viewModel: viewModel)
                         .transition(.opacity.combined(with: .scale))
                 } else {
-                    TabView {
-                        SingleCityContainerView(
-                            cityName: "Cairo",
-                            favoriteLocations: favoriteLocations,
-                            modelContext: modelContext
-                        )
-                        .id("Cairo-StaticPage")
-                        
-                        ForEach(displayedCities, id: \.self) { cityName in
+                    if !hasLocationLoaded || locationManager.lastLocation == nil {
+                        ProgressView()
+                            .scaleEffect(1.5)
+                            .tint(.white)
+                    } else {
+                        TabView {
                             SingleCityContainerView(
-                                cityName: cityName,
+                                cityName: locationManager.locationString ?? "Ismailia",
+                                latitude: locationManager.lastLocation?.coordinate.latitude ?? 30.5965,
+                                longitude: locationManager.lastLocation?.coordinate.longitude ?? 32.2715,
                                 favoriteLocations: favoriteLocations,
                                 modelContext: modelContext
                             )
-                            .id("\(cityName)-\(displayedCities.count)")
+                            .id("current_location_page")
+                            
+                            ForEach(favoriteLocations) { city in
+                                SingleCityContainerView(
+                                    cityName: city.name,
+                                    latitude: city.latitude,
+                                    longitude: city.longitude,
+                                    favoriteLocations: favoriteLocations,
+                                    modelContext: modelContext
+                                )
+                                .id(city.persistentModelID)
+                            }
                         }
+                        .tabViewStyle(.page(indexDisplayMode: .always))
+                        .ignoresSafeArea(edges: .top)
+                        .transition(.opacity)
                     }
-                    .tabViewStyle(.page(indexDisplayMode: .always))
-                    .ignoresSafeArea(edges: .top)
-                    .id(displayedCities.joined(separator: ","))
                 }
             }
             .animation(.easeInOut, value: viewModel.isOffline)
@@ -54,9 +68,7 @@ struct HomeView: View {
             }
         }
         .onAppear {
-            setupDisplayedCities()
-            
-            viewModel.loadWeatherData()
+            locationManager.requestLocation()
             
             let appearance = UINavigationBarAppearance()
             appearance.configureWithTransparentBackground()
@@ -66,18 +78,18 @@ struct HomeView: View {
             UIPageControl.appearance().currentPageIndicatorTintColor = .white
             UIPageControl.appearance().pageIndicatorTintColor = UIColor.white.withAlphaComponent(0.4)
         }
-        .onChange(of: favoriteLocations) { _, _ in
-            setupDisplayedCities()
-        }
-    }
-    
-    private func setupDisplayedCities() {
-        let cities = favoriteLocations.map { city in
-            city.name.trimmingCharacters(in: .whitespacesAndNewlines)
-        }.filter { !$0.isEmpty && $0.lowercased() != "cairo" }
-        
-        withAnimation(.easeInOut) {
-            self.displayedCities = cities
+        .onChange(of: locationManager.lastLocation) { _, newLocation in
+            if let newLocation {
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+                    withAnimation(.easeInOut(duration: 0.4)) {
+                        viewModel.loadWeatherData(
+                            lat: newLocation.coordinate.latitude,
+                            lon: newLocation.coordinate.longitude
+                        )
+                        self.hasLocationLoaded = true
+                    }
+                }
+            }
         }
     }
 }

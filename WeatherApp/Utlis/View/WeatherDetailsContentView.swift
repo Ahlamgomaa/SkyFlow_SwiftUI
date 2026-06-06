@@ -1,4 +1,3 @@
-
 import SwiftUI
 import SwiftData
 
@@ -6,6 +5,7 @@ struct WeatherDetailsContentView: View {
     @Bindable var viewModel: HomeViewModel
     var favoriteLocations: [FavoriteCity]
     var modelContext: ModelContext
+    var cityName: String
 
     var body: some View {
         ZStack {
@@ -15,7 +15,7 @@ struct WeatherDetailsContentView: View {
             VStack(spacing: 0) {
                 if viewModel.isLoading {
                     Spacer()
-                    ProgressView() 
+                    ProgressView()
                         .scaleEffect(1.5)
                         .tint(.white)
                         .foregroundColor(.white)
@@ -23,17 +23,23 @@ struct WeatherDetailsContentView: View {
                     
                 } else if let weather = viewModel.currentWeather {
                     
-                    let isCurrentCityFavorite = favoriteLocations.contains { $0.name.lowercased() == weather.location.name.lowercased() }
+                    let isCurrentCityFavorite = favoriteLocations.contains { $0.name.lowercased() == cityName.lowercased() }
+
+                    let displayName = cityName.isEmpty ? weather.location.name : cityName
 
                     TopWeatherDivisionView(
+                    
                         weather: weather,
                         isMorning: viewModel.isMorning,
-                        isFavorite: isCurrentCityFavorite,
+                        isFavorite: isCurrentCityFavorite, cityName: cityName,
                         onFavoriteTapped: {
-                            if let existing = favoriteLocations.first(where: { $0.name.lowercased() == weather.location.name.lowercased() }) {
+                            if let existing = favoriteLocations.first(where: { $0.name.lowercased() == displayName.lowercased() }) {
                                 modelContext.delete(existing)
                             } else {
-                                modelContext.insert(FavoriteCity(name: weather.location.name))
+                                modelContext.insert(FavoriteCity(name: displayName,
+                                                                 latitude: weather.location.lat,
+                                                                 longitude: weather.location.lon,
+                                                              ))
                             }
                             try? modelContext.save()
                         }

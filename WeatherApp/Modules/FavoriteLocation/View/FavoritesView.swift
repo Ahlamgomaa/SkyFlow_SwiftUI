@@ -8,7 +8,7 @@ struct FavoritesView: View {
     
     @Query(sort: \FavoriteCity.timestamp, order: .forward) private var favoriteCities: [FavoriteCity]
     
-    @State private var selectedCity: String? = nil
+    @State private var selectedCity: FavoriteCity? = nil
     @State private var showDetails = false
     
     @State private var showDeleteAlert = false
@@ -37,28 +37,22 @@ struct FavoritesView: View {
                                     Label("Delete", systemImage: "trash")
                                 }
                             }
-                            .listRowBackground(Color.clear)
-                            .listRowInsets(EdgeInsets(top: 8, leading: 16, bottom: 8, trailing: 16))
-                            .listRowSeparator(.hidden)
                         }
+                        .listRowBackground(Color.clear)
+                        .listRowSeparator(.hidden)
                     }
                     .listStyle(.plain)
-                    .scrollContentBackground(.hidden)
                 }
             }
-            
-            NavigationLink(
-                isActive: $showDetails,
-                destination: {
-                    WeatherDetailsContentView(
-                        viewModel: homeViewModel,
-                        favoriteLocations: favoriteLocations,
-                        modelContext: modelContext, cityName: <#String#>
-                    )
-                    .navigationBarBackButtonHidden(false)
-                },
-                label: { EmptyView() }
-            )
+            .navigationDestination(isPresented: $showDetails) {
+                WeatherDetailsContentView(
+                    viewModel: homeViewModel,
+                    favoriteLocations: favoriteLocations,
+                    modelContext: modelContext,
+                    cityName: selectedCity?.name ?? ""
+                )
+                .navigationBarBackButtonHidden(false)
+            }
         }
         .toolbar {
             ToolbarItem(placement: .navigationBarTrailing) {
@@ -80,6 +74,7 @@ struct FavoritesView: View {
     }
     
     private func handleCitySelection(_ city: FavoriteCity) {
+        self.selectedCity = city 
         homeViewModel.loadWeatherData(lat: city.latitude, lon: city.longitude)
         showDetails = true
     }
@@ -90,4 +85,3 @@ struct FavoritesView: View {
         cityToDelete = nil
     }
 }
-

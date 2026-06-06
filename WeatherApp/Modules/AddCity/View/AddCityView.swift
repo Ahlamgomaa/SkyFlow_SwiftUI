@@ -11,10 +11,18 @@ struct AddCityView: View {
     @State private var searchText = ""
     @State private var pressedCityName: String? = nil
     
-    let suggestedCities = [
-        "Cairo", "Alexandria", "Washington", "New York",
-        "Los Angeles", "Chicago", "Houston",
-        "Paris", "Tokyo", "Dubai", "Miami"
+
+    let suggestedCitiesWithCoordinates = [
+        (name: "Alexandria", country: "Egypt", lat: 31.2001, lon: 29.9187),
+        (name: "Washington", country: "United States", lat: 38.9072, lon: -77.0369),
+        (name: "New York", country: "United States", lat: 40.7128, lon: -74.0060),
+        (name: "Paris", country: "France", lat: 48.8566, lon: 2.3522),
+        (name: "Tokyo", country: "Japan", lat: 35.6762, lon: 139.6503),
+        (name: "Dubai", country: "United Arab Emirates", lat: 25.2048, lon: 55.2708),
+        (name: "Miami", country: "United States", lat: 25.7617, lon: -80.1918),
+        (name: "Los Angeles", country: "United States", lat: 34.0522, lon: -118.2437),
+        (name: "Chicago", country: "United States", lat: 41.8781, lon: -87.6298),
+        (name: "Houston", country: "United States", lat: 29.7604, lon: -95.3698)
     ]
     
     let columns = [
@@ -73,16 +81,16 @@ struct AddCityView: View {
                     
                     LazyVGrid(columns: columns, spacing: 0) {
                         if searchText.isEmpty {
-                            ForEach(suggestedCities, id: \.self) { cityName in
-                                let isAdded = favoriteCities.contains { $0.name.lowercased() == cityName.lowercased() }
+                            ForEach(suggestedCitiesWithCoordinates, id: \.name) { city in
+                                let isAdded = favoriteCities.contains { $0.name.lowercased() == city.name.lowercased() }
                                 
-                                cityRowButton(name: cityName, country: "Suggested", isAdded: isAdded)
+                                cityRowButton(name: city.name, country: city.country, isAdded: isAdded, lat: city.lat, lon: city.lon)
                             }
                         } else {
                             ForEach(viewModel.searchResults) { cityResult in
                                 let isAdded = favoriteCities.contains { $0.name.lowercased() == cityResult.name.lowercased() }
                                 
-                                cityRowButton(name: cityResult.name, country: cityResult.country, isAdded: isAdded)
+                                cityRowButton(name: cityResult.name, country: cityResult.country, isAdded: isAdded, lat: cityResult.lat, lon: cityResult.lon)
                             }
                         }
                     }
@@ -102,7 +110,7 @@ struct AddCityView: View {
     }
     
     @ViewBuilder
-    private func cityRowButton(name: String, country: String, isAdded: Bool) -> some View {
+    private func cityRowButton(name: String, country: String, isAdded: Bool, lat: Double, lon: Double) -> some View {
         Button {
             withAnimation(.spring(response: 0.3, dampingFraction: 0.5)) {
                 pressedCityName = name
@@ -112,7 +120,7 @@ struct AddCityView: View {
                 withAnimation(.spring(response: 0.2, dampingFraction: 0.6)) {
                     pressedCityName = nil
                 }
-                toggleFavorite(cityName: name)
+                toggleFavorite(cityName: name, lat: lat, lon: lon)
             }
         } label: {
             VStack(spacing: 0) {
@@ -150,11 +158,11 @@ struct AddCityView: View {
         .scaleEffect(pressedCityName == name ? 0.90 : 1.0)
     }
     
-    private func toggleFavorite(cityName: String) {
+    private func toggleFavorite(cityName: String, lat: Double, lon: Double) {
         if let existingCity = favoriteCities.first(where: { $0.name.lowercased() == cityName.lowercased() }) {
             modelContext.delete(existingCity)
         } else {
-            let newCity = FavoriteCity(name: cityName, timestamp: Date())
+            let newCity = FavoriteCity(name: cityName, latitude: lat, longitude: lon, timestamp: Date())
             modelContext.insert(newCity)
         }
         try? modelContext.save()

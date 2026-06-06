@@ -48,13 +48,11 @@ struct CustomFavoriteCityRow: View {
         .buttonStyle(PlainButtonStyle())
         .onAppear {
             Task {
-                if let encoded = city.name.trimmingCharacters(in: .whitespacesAndNewlines).addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) {
-                    do {
-                        let data = try await repository.fetchCurrentWeather(for: encoded)
-                        self.weather = data
-                    } catch {
-                        print("Failed to load layout data for \(city.name): \(error)")
-                    }
+                do {
+                    let data = try await repository.fetchForecast(lat: city.latitude, lon: city.longitude)
+                    self.weather = data
+                } catch {
+                    print("Failed to load weather data for \(city.name): \(error)")
                 }
             }
         }

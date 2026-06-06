@@ -12,13 +12,13 @@ struct WeatherGridDetailsView: View {
     var body: some View {
         LazyVGrid(columns: columns, spacing: 16) {
             
-            detailCard(title: "VISIBILITY", value: "\(Int(weather.current.visKm)) km", systemIcon: "eye.fill")
+            detailCard(title: "Visinility", value: "\(Int(weather.current.visKm)) km", systemIcon: "eye.fill")
             
-            detailCard(title: "HUMIDITY", value: "\(weather.current.humidity)%", systemIcon: "humidity.fill")
+            detailCard(title: "Humidity", value: "\(weather.current.humidity)%", systemIcon: "humidity.fill")
             
-            detailCard(title: "FEELS LIKE", value: "\(Int(weather.current.feelslikeC))°", systemIcon: "thermometer.medium")
+            detailCard(title: "Feels Like", value: "\(Int(weather.current.feelslikeC))°", systemIcon: "thermometer.medium")
             
-            detailCard(title: "PRESSURE", value: formatPressure(weather.current.pressureMb), systemIcon: "gauge.with.needle")
+            detailCard(title: "Pressure", value: formatPressure(weather.current.pressureMb), systemIcon: "gauge.with.needle")
         }
         .padding(.horizontal, 20)
     }
