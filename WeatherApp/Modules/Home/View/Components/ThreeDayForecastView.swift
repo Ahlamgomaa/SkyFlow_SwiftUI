@@ -13,14 +13,20 @@ struct ThreeDayForecastView: View {
     private var globalMaxTemp: Double {
         forecastDays.map { $0.day.maxtempC }.max() ?? 1
     }
+    private var textColor : Color{
+        isMorning ? .black.opacity(0.9) : .white
+    }
+    
     
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
             HStack(spacing: 8) {
                 Image(systemName: "calendar")
                     .font(.footnote)
+                    .foregroundColor(textColor)
                 Text("3-DAY FORECAST")
                     .font(.system(size: 12, weight: .bold))
+                    .foregroundColor(textColor)
             }
             .foregroundColor(.white.opacity(0.6))
            
@@ -34,7 +40,7 @@ struct ThreeDayForecastView: View {
                     HStack(spacing: 0) {
                         Text(getDayName(for: index, dateString: dayData.date))
                             .font(.system(size: 18, weight: .semibold))
-                            .foregroundColor(.white)
+                            .foregroundColor(textColor)
                             .frame(width: 85, alignment: .leading)
                         
                         AsyncImage(url: URL(string: "https:\(dayData.day.condition.icon)")) { image in
@@ -50,7 +56,7 @@ struct ThreeDayForecastView: View {
                         
                         Text("\(Int(minTemp))°")
                             .font(.system(size: 18, weight: .medium))
-                            .foregroundColor(.white.opacity(0.6))
+                            .foregroundColor(textColor)
                             .frame(width: 35, alignment: .leading)
                         
                         GeometryReader { geo in
@@ -93,7 +99,7 @@ struct ThreeDayForecastView: View {
                         
                         Text("\(Int(maxTemp))°")
                             .font(.system(size: 18, weight: .semibold))
-                            .foregroundColor(.white)
+                            .foregroundColor(textColor)
                             .frame(width: 35, alignment: .trailing)
                     }
                     .padding(.vertical, 4)
@@ -129,4 +135,3 @@ struct ThreeDayForecastView: View {
         return day == "Wednesday" ? "Wed" : String(day.prefix(3))
     }
 }
-

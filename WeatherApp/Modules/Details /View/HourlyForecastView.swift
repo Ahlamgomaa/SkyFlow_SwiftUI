@@ -41,7 +41,7 @@ struct HourlyForecastView: View {
                             ForEach(Array(filteredHours.enumerated()), id: \.element.time) { seqIndex, hour in
                                 let isNowRow = (dayIndex == 0 && seqIndex == 0)
                                 
-                                HourlyRowView(hour: hour, isNow: isNowRow)
+                                HourlyRowView(hour: hour, isNow: isNowRow, isMorning: viewModel.isMorning)
                             }
                         } else {
                             ProgressView()

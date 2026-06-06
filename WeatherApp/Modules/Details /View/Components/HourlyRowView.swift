@@ -3,11 +3,16 @@ import SwiftUI
 struct HourlyRowView: View {
     let hour: HourInfo
     let isNow: Bool
+    let isMorning: Bool
+    
+    private var textColor:Color{
+        isMorning ? .black.opacity(0.9) : .white
+    }
     var body: some View {
         HStack(spacing: 0) {
             Text(isNow ? "Now" : formatTime(hour.time))
                 .font(.system(size: 24, weight: isNow ? .bold : .medium))
-                .foregroundColor(isNow ? .yellow : .white)
+                .foregroundColor(isNow ? .yellow : textColor)
                 .frame(width: 100, alignment: .leading)
             Spacer()
             AsyncImage(url: URL(string: "https:\(hour.condition.icon)")) { image in
@@ -23,10 +28,10 @@ struct HourlyRowView: View {
             Spacer()
             Text("\(Int(hour.tempC))°")
                 .font(.system(size: 28, weight: .medium, design: .rounded))
-                .foregroundColor(.white)
+                .foregroundColor(textColor)
                 .frame(width: 70, alignment: .trailing)
         }
-        .foregroundColor(.white)
+        .foregroundColor(textColor)
         .frame(height: 65)
         .padding(.horizontal, 24)
     }

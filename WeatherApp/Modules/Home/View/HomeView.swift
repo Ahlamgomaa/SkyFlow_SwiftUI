@@ -62,7 +62,7 @@ struct HomeView: View {
                     NavigationLink(destination: FavoritesView(homeViewModel: viewModel)) {
                         Image(systemName: "list.bullet")
                             .font(.title3)
-                            .foregroundColor(.white)
+                            .foregroundColor(viewModel.isMorning ? .black.opacity(0.9): .white)
                     }
                 }
             }
