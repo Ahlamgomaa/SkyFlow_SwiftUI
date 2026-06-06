@@ -26,7 +26,7 @@ struct FavoritesView: View {
                 } else {
                     List {
                         ForEach(favoriteCities) { city in
-                            CustomFavoriteCityRow(city: city, repository: WeatherRepositoryImp()) {
+                            CustomFavoriteCityRow(city: city, repository: WeatherRepositoryImp(), isMorning: homeViewModel.isMorning) {
                                 handleCitySelection(city)
                             }
                             .swipeActions(edge: .trailing, allowsFullSwipe: true) {
@@ -59,7 +59,7 @@ struct FavoritesView: View {
                 NavigationLink(destination: AddCityView()) {
                     Image(systemName: "plus")
                         .font(.title3)
-                        .foregroundColor(.white)
+                        .foregroundColor(homeViewModel.isMorning ? .black.opacity(0.9) : .white)
                 }
             }
         }

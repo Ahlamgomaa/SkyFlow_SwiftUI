@@ -30,7 +30,7 @@ struct HourlyForecastView: View {
                 }) {
                     Image(systemName: "arrow.left")
                         .font(.title2)
-                        .foregroundColor(.white)
+                        .foregroundColor(viewModel.isMorning ? .black.opacity(0.9) : .white)
                         .padding(.horizontal, 20)
                         .padding(.top, 20)
                 }

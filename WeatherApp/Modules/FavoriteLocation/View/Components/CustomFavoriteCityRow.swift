@@ -2,7 +2,13 @@ import SwiftUI
 struct CustomFavoriteCityRow: View {
     let city: FavoriteCity
     let repository: WeatherRepository
+    let isMorning: Bool
     var onTap: () -> Void
+
+    
+    private var textColor:Color{
+        isMorning ? .black.opacity(0.9) : .white
+    }
     
     @State private var weather: CurrentWeatherResponse? = nil
     
@@ -12,6 +18,7 @@ struct CustomFavoriteCityRow: View {
                 VStack(alignment: .leading, spacing: 4) {
                     Text(city.name)
                         .font(.system(size: 24, weight: .bold))
+                        .foregroundColor(textColor)
                 }
                 
                 Spacer()
@@ -21,9 +28,13 @@ struct CustomFavoriteCityRow: View {
                         VStack(alignment: .trailing, spacing: 2) {
                             Text("\(Int(weather.current.tempC))°")
                                 .font(.system(size: 32, weight: .medium))
+                                .foregroundColor(textColor)
+
                             Text(weather.current.condition.text)
                                 .font(.system(size: 14, weight: .bold))
                                 .opacity(0.8)
+                                .foregroundColor(textColor)
+
                         }
                         
                         AsyncImage(url: URL(string: "https:\(weather.current.condition.icon)")) { image in
@@ -36,14 +47,14 @@ struct CustomFavoriteCityRow: View {
                     }
                 } else {
                     ProgressView()
-                        .tint(.white)
+                        .tint(textColor)
                 }
             }
             .padding(.horizontal, 24)
             .padding(.vertical, 20)
             .background(Color.white.opacity(0.15))
             .cornerRadius(15) 
-            .foregroundColor(.white)
+            .foregroundColor(textColor)
         }
         .buttonStyle(PlainButtonStyle())
         .onAppear {

@@ -35,17 +35,17 @@ struct AddCityView: View {
             HStack(spacing: 12) {
                 Button {
                     dismiss()
-                } label: {
+                }
+                label: {
                     Image(systemName: "chevron.left")
                         .font(.title2)
-                        .foregroundColor(.white)
+                        .foregroundColor(.gray)
                 }
-                
                 HStack {
                     Image(systemName: "magnifyingglass")
                         .foregroundColor(.gray)
-                    TextField("", text: $searchText, prompt: Text("Search for a city...").foregroundColor(.gray))
-                        .foregroundColor(.white)
+                    TextField("", text: $searchText, prompt: Text("Search for a city..."))
+                        .foregroundColor(.gray)
                         .autocorrectionDisabled()
                         .onChange(of: searchText) { _, newValue in
                             viewModel.searchCities(query: newValue)
@@ -65,7 +65,7 @@ struct AddCityView: View {
                     
                     if searchText.isEmpty {
                         Text("SUGGESTED CITIES")
-                            .font(.system(size: 13, weight: .semibold))
+                            .font(.system(size: 13, weight: .bold))
                             .foregroundColor(.gray)
                             .padding(.horizontal)
                     }
@@ -73,7 +73,7 @@ struct AddCityView: View {
                     if viewModel.isSearching {
                         HStack {
                             Spacer()
-                            ProgressView().tint(.white)
+                            ProgressView().tint(viewModel.isMorning ? .black.opacity(0.9) : .white)
                             Spacer()
                         }
                         .padding(.top, 20)
@@ -128,7 +128,7 @@ struct AddCityView: View {
                     VStack(alignment: .leading, spacing: 4) {
                         Text(name)
                             .font(.system(size: 16, weight: .bold))
-                            .foregroundColor(.white)
+                            .foregroundColor(viewModel.isMorning ? .black.opacity(0.9) : .white)
                             .lineLimit(1)
                         
                         Text(country)
@@ -141,7 +141,7 @@ struct AddCityView: View {
                     
                     if isAdded {
                         Image(systemName: "star.fill")
-                            .foregroundColor(.orange)
+                            .foregroundColor(.red)
                             .font(.subheadline)
                             .transition(.scale.combined(with: .opacity))
                     }

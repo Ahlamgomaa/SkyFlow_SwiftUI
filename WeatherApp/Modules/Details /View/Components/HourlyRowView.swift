@@ -21,7 +21,7 @@ struct HourlyRowView: View {
                     .scaledToFit()
             } placeholder: {
                 ProgressView()
-                    .tint(.white)
+                    .tint(textColor)
             }
             .frame(width: 65, height: 65)
             .frame(width: 80, alignment: .center)
