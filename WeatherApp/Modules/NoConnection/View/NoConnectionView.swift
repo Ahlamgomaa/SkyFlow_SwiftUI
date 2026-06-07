@@ -10,20 +10,22 @@ struct NoConnectionView: View {
                     .font(.footnote)
                 Text("NO INTERNET CONNECTION")
                     .font(.system(size: 12, weight: .bold))
+                    .foregroundColor(viewModel.isMorning ? .black.opacity(0.9) : .white)
+
             }
-            .foregroundColor(.white.opacity(0.6))
+            .foregroundColor(viewModel.isMorning ? .black.opacity(0.9) : .white)
             
             Divider()
-                .background(Color.white.opacity(0.2))
+                .background(viewModel.isMorning ? .black.opacity(0.9) : .white)
             
             VStack(spacing: 10) {
                 Text("You're Offline")
                     .font(.system(size: 18, weight: .bold))
-                    .foregroundColor(.white)
+                    .foregroundColor(viewModel.isMorning ? .black.opacity(0.9) : .white)
                 
                 Text("You can still browse your saved locations from your favorites list.")
                     .font(.system(size: 14))
-                    .foregroundColor(.white.opacity(0.7))
+                    .foregroundColor(viewModel.isMorning ? .black.opacity(0.9) : .white)
                     .multilineTextAlignment(.center)
                     .padding(.horizontal, 10)
             }
@@ -36,7 +38,7 @@ struct NoConnectionView: View {
                         .fontWeight(.semibold)
                 }
                 .font(.system(size: 16))
-                .foregroundColor(.white)
+                .foregroundColor(viewModel.isMorning ? .black.opacity(0.9) : .white)
                 .padding(.vertical, 12)
                 .padding(.horizontal, 24)
                 .frame(maxWidth: .infinity)

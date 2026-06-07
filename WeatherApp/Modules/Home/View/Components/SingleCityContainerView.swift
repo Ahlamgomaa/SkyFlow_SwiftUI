@@ -9,6 +9,7 @@ struct SingleCityContainerView: View {
     var modelContext: ModelContext
     
     @State private var singleViewModel = HomeViewModel()
+    @State private var networkMonitor = NetworkMonitor.shared
     
     var body: some View {
         WeatherDetailsContentView(
@@ -19,6 +20,11 @@ struct SingleCityContainerView: View {
         )
         .onAppear {
             singleViewModel.loadWeatherData(lat: latitude, lon: longitude)
+        }
+        .onChange(of: networkMonitor.isConnected) { _, isConnected in
+            if isConnected {
+                singleViewModel.loadWeatherData(lat: latitude, lon: longitude)
+            }
         }
     }
 }

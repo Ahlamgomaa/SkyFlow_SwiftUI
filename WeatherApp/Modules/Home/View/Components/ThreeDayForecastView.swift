@@ -43,13 +43,23 @@ struct ThreeDayForecastView: View {
                             .foregroundColor(textColor)
                             .frame(width: 85, alignment: .leading)
                         
-                        AsyncImage(url: URL(string: "https:\(dayData.day.condition.icon)")) { image in
-                            image
-                                .resizable()
-                                .scaledToFit()
-                        } placeholder: {
-                            ProgressView()
-                                .tint(.white)
+                        AsyncImage(url: URL(string: "https:\(dayData.day.condition.icon)")) { phase in
+                            switch phase {
+                            case .success(let image):
+                                image
+                                    .resizable()
+                                    .scaledToFit()
+                            case .failure:
+                                Image(systemName: "cloud.sun.fill")
+                                    .resizable()
+                                    .scaledToFit()
+                                    .foregroundColor(textColor.opacity(0.6))
+                            case .empty:
+                                ProgressView()
+                                    .tint(textColor)
+                            @unknown default:
+                                EmptyView()
+                            }
                         }
                         .frame(width: 32, height: 32)
                         .frame(width: 50, alignment: .center)

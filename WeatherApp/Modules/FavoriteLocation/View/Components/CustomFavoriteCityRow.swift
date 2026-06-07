@@ -37,11 +37,20 @@ struct CustomFavoriteCityRow: View {
 
                         }
                         
-                        AsyncImage(url: URL(string: "https:\(weather.current.condition.icon)")) { image in
-                            image.resizable()
-                                 .scaledToFit()
-                        } placeholder: {
-                            ProgressView()
+                        AsyncImage(url: URL(string: "https:\(weather.current.condition.icon)")) { phase in
+                            switch phase {
+                            case .success(let image):
+                                image.resizable().scaledToFit()
+                            case .failure:
+                                Image(systemName: "cloud.sun.fill")
+                                    .resizable()
+                                    .scaledToFit()
+                                    .foregroundColor(textColor.opacity(0.6))
+                            case .empty:
+                                ProgressView().tint(textColor)
+                            @unknown default:
+                                EmptyView()
+                            }
                         }
                         .frame(width: 40, height: 40)
                     }

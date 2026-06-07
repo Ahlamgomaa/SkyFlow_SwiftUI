@@ -5,6 +5,7 @@ import CoreLocation
 struct HomeView: View {
     @State private var viewModel = HomeViewModel()
     @State private var locationManager = LocationManager()
+    @State private var networkMonitor = NetworkMonitor.shared
     
     @State private var hasLocationLoaded = false
     
@@ -20,43 +21,41 @@ struct HomeView: View {
                 VideoBackgroundView(videoName: viewModel.backgroundVideoName)
                     .ignoresSafeArea()
                 
-                if viewModel.isOffline {
+                if !networkMonitor.isConnected {
                     NoConnectionView(viewModel: viewModel)
                         .transition(.opacity.combined(with: .scale))
+                } else if !hasLocationLoaded || locationManager.lastLocation == nil {
+                    ProgressView()
+                        .scaleEffect(1.5)
+                        .tint(.white)
                 } else {
-                    if !hasLocationLoaded || locationManager.lastLocation == nil {
-                        ProgressView()
-                            .scaleEffect(1.5)
-                            .tint(.white)
-                    } else {
-                        TabView {
+                    TabView {
+                        SingleCityContainerView(
+                            cityName: locationManager.locationString ?? "Ismailia",
+                            latitude: locationManager.lastLocation?.coordinate.latitude ?? 30.5965,
+                            longitude: locationManager.lastLocation?.coordinate.longitude ?? 32.2715,
+                            favoriteLocations: favoriteLocations,
+                            modelContext: modelContext
+                        )
+                        .id("current_location_page")
+                        
+                        ForEach(favoriteLocations) { city in
                             SingleCityContainerView(
-                                cityName: locationManager.locationString ?? "Ismailia",
-                                latitude: locationManager.lastLocation?.coordinate.latitude ?? 30.5965,
-                                longitude: locationManager.lastLocation?.coordinate.longitude ?? 32.2715,
+                                cityName: city.name,
+                                latitude: city.latitude,
+                                longitude: city.longitude,
                                 favoriteLocations: favoriteLocations,
                                 modelContext: modelContext
                             )
-                            .id("current_location_page")
-                            
-                            ForEach(favoriteLocations) { city in
-                                SingleCityContainerView(
-                                    cityName: city.name,
-                                    latitude: city.latitude,
-                                    longitude: city.longitude,
-                                    favoriteLocations: favoriteLocations,
-                                    modelContext: modelContext
-                                )
-                                .id(city.persistentModelID)
-                            }
+                            .id(city.persistentModelID)
                         }
-                        .tabViewStyle(.page(indexDisplayMode: .always))
-                        .ignoresSafeArea(edges: .top)
-                        .transition(.opacity)
                     }
+                    .tabViewStyle(.page(indexDisplayMode: .always))
+                    .ignoresSafeArea(edges: .top)
+                    .transition(.opacity)
                 }
             }
-            .animation(.easeInOut, value: viewModel.isOffline)
+            .animation(.easeInOut, value: networkMonitor.isConnected)
             .toolbar {
                 ToolbarItem(placement: .navigationBarTrailing) {
                     NavigationLink(destination: FavoritesView(homeViewModel: viewModel)) {
@@ -81,6 +80,19 @@ struct HomeView: View {
         .onChange(of: locationManager.lastLocation) { _, newLocation in
             if let newLocation {
                 DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+                    withAnimation(.easeInOut(duration: 0.4)) {
+                        viewModel.loadWeatherData(
+                            lat: newLocation.coordinate.latitude,
+                            lon: newLocation.coordinate.longitude
+                        )
+                        self.hasLocationLoaded = true
+                    }
+                }
+            }
+        }
+        .onChange(of: networkMonitor.isConnected) { _, isConnected in
+            if isConnected {
+                if let newLocation = locationManager.lastLocation {
                     withAnimation(.easeInOut(duration: 0.4)) {
                         viewModel.loadWeatherData(
                             lat: newLocation.coordinate.latitude,

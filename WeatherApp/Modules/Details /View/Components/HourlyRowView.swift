@@ -15,13 +15,23 @@ struct HourlyRowView: View {
                 .foregroundColor(isNow ? .yellow : textColor)
                 .frame(width: 100, alignment: .leading)
             Spacer()
-            AsyncImage(url: URL(string: "https:\(hour.condition.icon)")) { image in
-                image
-                    .resizable()
-                    .scaledToFit()
-            } placeholder: {
-                ProgressView()
-                    .tint(textColor)
+            AsyncImage(url: URL(string: "https:\(hour.condition.icon)")) { phase in
+                switch phase {
+                case .success(let image):
+                    image
+                        .resizable()
+                        .scaledToFit()
+                case .failure:
+                    Image(systemName: "cloud.fill")
+                        .resizable()
+                        .scaledToFit()
+                        .foregroundColor(textColor.opacity(0.6))
+                case .empty:
+                    ProgressView()
+                        .tint(textColor)
+                @unknown default:
+                    EmptyView()
+                }
             }
             .frame(width: 65, height: 65)
             .frame(width: 80, alignment: .center)

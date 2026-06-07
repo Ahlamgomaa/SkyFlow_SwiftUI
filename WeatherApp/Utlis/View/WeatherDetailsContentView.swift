@@ -6,6 +6,8 @@ struct WeatherDetailsContentView: View {
     var favoriteLocations: [FavoriteCity]
     var modelContext: ModelContext
     var cityName: String
+    
+    @State private var networkMonitor = NetworkMonitor.shared
 
     var body: some View {
         ZStack {
@@ -13,7 +15,12 @@ struct WeatherDetailsContentView: View {
                 .ignoresSafeArea()
 
             VStack(spacing: 0) {
-                if viewModel.isLoading {
+                if !networkMonitor.isConnected {
+                    Spacer()
+                    NoConnectionView(viewModel: viewModel)
+                        .transition(.opacity.combined(with: .scale))
+                    Spacer()
+                } else if viewModel.isLoading {
                     Spacer()
                     ProgressView()
                         .scaleEffect(1.5)
@@ -72,5 +79,6 @@ struct WeatherDetailsContentView: View {
                 }
             }
         }
+        .animation(.easeInOut, value: networkMonitor.isConnected)
     }
 }
